@@ -21,10 +21,6 @@ public class SpringsecuritybasicApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Customer customer = new Customer();
-		customer.setEmail("lmthong98@gmail.com");
-		customer.setPwd(passwordEncoder.encode("123"));
-		customer.setRole("user");
-		customerRepository.save(customer);
+		Customer customer = customerRepository.findByEmail("lmthong98@gmail.com").orElseThrow();
 	}
 }
