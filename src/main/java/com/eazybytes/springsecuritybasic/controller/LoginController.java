@@ -5,8 +5,10 @@ import com.eazybytes.springsecuritybasic.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,6 +34,11 @@ public class LoginController {
                     .body("An exception occured due to " + ex.getMessage());
         }
         return response;
+    }
+
+    @RequestMapping("/user")
+    public Customer getUserDetailsAfterLogin(Authentication authentication) {
+        return customerRepository.findByEmail(authentication.getName()).orElseThrow();
     }
 
 }
