@@ -1,9 +1,13 @@
 package com.eazybytes.springsecuritybasic.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Date;
 
+@Getter
+@Setter
 @Entity
 @Table(name="loans")
 public class Loans {
