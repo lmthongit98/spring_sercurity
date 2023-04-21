@@ -1,6 +1,9 @@
 package com.eazybytes.springsecuritybasic.config;
 
+import com.eazybytes.springsecuritybasic.filter.AuthoritiesLoggingAfterFilter;
+import com.eazybytes.springsecuritybasic.filter.AuthoritiesLoggingAtFilter;
 import com.eazybytes.springsecuritybasic.filter.CsrfCookieFilter;
+import com.eazybytes.springsecuritybasic.filter.RequestValidationBeforeFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,8 +38,11 @@ public class SecurityConfig {
             return config;
         }).and().csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler)
                         .ignoringRequestMatchers("/contact", "/register")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())).
-                addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests()
                 .requestMatchers("/myAccount").hasRole("USER")
                 .requestMatchers("/myBalance").hasAnyRole("USER","ADMIN")
