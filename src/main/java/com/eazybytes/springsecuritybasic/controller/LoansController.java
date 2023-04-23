@@ -1,6 +1,8 @@
 package com.eazybytes.springsecuritybasic.controller;
 
+import com.eazybytes.springsecuritybasic.model.Customer;
 import com.eazybytes.springsecuritybasic.model.Loans;
+import com.eazybytes.springsecuritybasic.repository.CustomerRepository;
 import com.eazybytes.springsecuritybasic.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,11 +16,15 @@ import java.util.List;
 public class LoansController {
 
     @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
     private LoanRepository loanRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/myLoans")
-    public List<Loans> getLoanDetails(@RequestParam int id) {
-        return loanRepository.findByCustomerIdOrderByStartDtDesc(id);
+    public List<Loans> getLoanDetails(@RequestParam String email) {
+        Customer customer = customerRepository.findByEmail(email).orElseThrow();
+        return loanRepository.findByCustomerIdOrderByStartDtDesc(customer.getId());
     }
 }
